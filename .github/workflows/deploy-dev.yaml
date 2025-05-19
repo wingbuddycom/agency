@@ -1,0 +1,36 @@
+name: Deploy Dev
+on: { push: { branches: [dev] } }
+
+permissions: { id-token: write, contents: read }
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIP_DEV }}
+          service_account: cicd@wb-dev-383717.iam.gserviceaccount.com
+
+      - id: build
+        uses: google-github-actions/build@v2
+        with:
+          project_id: wb-dev-383717
+          name: agency
+          tag: ${{ github.sha }}
+
+      - uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: agency-dev
+          image: ${{ steps.build.outputs.image }}
+          project_id: wb-dev-383717
+          region: northamerica-northeast1
+          flags: |
+            --add-cloudsql-instances=wb-dev-383717:northamerica-northeast1:wbr-dev
+            --port=8080
+          env_vars: APP_ENV=development
+          secrets: |
+            DB_PASSWORD=projects/wb-dev-383717/secrets/DB_PASSWORD:latest
+            RECAPTCHA_SITE_KEY=projects/wb-dev-383717/secrets/RECAPTCHA_SITE_KEY:latest

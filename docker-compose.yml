@@ -1,0 +1,22 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        env_file: .env
+        ports: ["8080:8080"]
+        depends_on: [proxy]
+
+    proxy:
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2
+        environment:
+            - GOOGLE_CLOUD_SQL_CONNECTION_NAME=${GOOGLE_CLOUD_SQL_CONNECTION_NAME}
+        volumes:
+            - ~/.gcp/sql-proxy-key.json:/config/key.json:ro
+        command:
+          [
+              "--credentials-file=/config/key.json",
+              "--address", "0.0.0.0",                 # 👈 NEW
+              "${GOOGLE_CLOUD_SQL_CONNECTION_NAME}",
+              "--port", "3306"
+          ]

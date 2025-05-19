@@ -11,7 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // 1) give Laravel a short name (alias) that points to your class
+        $middleware->alias([
+            'setlocale' => \App\Http\Middleware\SetLocale::class,
+        ]);
+
+        // 2) OPTIONAL: make it run automatically on every “web” route
+        //    If you prefer to add it route-by-route, delete this line.
+        $middleware->appendToGroup('web', \App\Http\Middleware\SetLocale::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
