@@ -1,34 +1,45 @@
 name: Deploy Dev
-on: { push: { branches: [dev] } }
+on:
+  push:
+    branches:
+      - dev
 
-permissions: { id-token: write, contents: read }
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout the code
       - uses: actions/checkout@v4
 
+      # Step 2: Authenticate with Google Cloud using Workload Identity Federation
       - uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.GCP_WIP_DEV }}
           service_account: cicd@wb-dev-383717.iam.gserviceaccount.com
 
-      - id: build
-        uses: google-github-actions/build@v2
-        with:
-          project_id: wb-dev-383717
-          name: agency
-          tag: ${{ github.sha }}
+      # Step 3: Set up gcloud CLI
+      - uses: google-github-actions/setup-gcloud@v2
 
+      # Step 4: Build your Docker image using Cloud Build
+      - name: Build container with Cloud Build
+        run: |
+          gcloud builds submit \
+            --project=wb-dev-383717 \
+            --tag=gcr.io/wb-dev-383717/agency:${{ github.sha }}
+
+      # Step 5: Deploy to Cloud Run
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: agency-dev
-          image: ${{ steps.build.outputs.image }}
+          image: gcr.io/wb-dev-383717/agency:${{ github.sha }}
           project_id: wb-dev-383717
-          region: northamerica-northeast1
+          region: us-central1
           flags: |
-            --add-cloudsql-instances=wb-dev-383717:northamerica-northeast1:wbr-dev
+            --add-cloudsql-instances=wb-dev-383717:us-central1:wbr-dev
             --port=8080
           env_vars: APP_ENV=development
           secrets: |
