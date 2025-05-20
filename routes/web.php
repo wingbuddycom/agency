@@ -21,7 +21,9 @@ Route::group([
     // so we don’t need to list 'setlocale' again.
     'middleware' => 'web',
 ], function () {
-
+    Route::get('/.well-known/acme-challenge/{any}', function () {
+        return response('OK', 200);
+    })->where('any', '.*');
     /* ----------  Auth  ---------- */
     Route::get ('/login',  [LoginController::class, 'index'])->name('login');
     Route::post('/login',  [LoginController::class, 'authenticate'])->name('login.submit');
