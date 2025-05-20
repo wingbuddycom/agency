@@ -23,7 +23,8 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GCP_WIP_DEV }}
           service_account: cicd-github-actions@wb-dev-383717.iam.gserviceaccount.com
-
+          token_format: "id_token"
+          id_token_audience: "https://gcp"
       # OPTIONAL: Print decoded ID token to verify OIDC subject (for troubleshooting)
       - name: Debug OIDC token (remove in production)
         run: |
