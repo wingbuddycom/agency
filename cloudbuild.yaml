@@ -1,0 +1,6 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/wb-dev-383717/agency:$COMMIT_SHA', '-f', 'docker/Dockerfile', '.']
+
+images:
+  - 'gcr.io/wb-dev-383717/agency:$COMMIT_SHA'

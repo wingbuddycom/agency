@@ -34,8 +34,7 @@ jobs:
         run: |
           gcloud builds submit . \
             --project=wb-dev-383717 \
-            --tag=gcr.io/wb-dev-383717/agency:${{ github.sha }} \
-            --dockerfile=docker/Dockerfile
+            --substitutions=_COMMIT_SHA=${{ github.sha }}
       # Step 5: Deploy to Cloud Run
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
