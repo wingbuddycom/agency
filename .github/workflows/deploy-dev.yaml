@@ -25,10 +25,6 @@ jobs:
           service_account: cicd-github-actions@wb-dev-383717.iam.gserviceaccount.com
           token_format: "id_token"
           id_token_audience: "https://gcp"
-      # OPTIONAL: Print decoded ID token to verify OIDC subject (for troubleshooting)
-      - name: Debug OIDC token (remove in production)
-        run: |
-          echo "${{ steps.auth.outputs.id_token }}" | cut -d '.' -f2 | base64 -d | jq || true
 
       # Step 3: Set up gcloud CLI
       - uses: google-github-actions/setup-gcloud@v2
@@ -36,10 +32,10 @@ jobs:
       # Step 4: Build your Docker image using Cloud Build
       - name: Build container with Cloud Build
         run: |
-          gcloud builds submit ./docker \
+          gcloud builds submit . \
             --project=wb-dev-383717 \
-            --tag=gcr.io/wb-dev-383717/agency:${{ github.sha }}
-
+            --tag=gcr.io/wb-dev-383717/agency:${{ github.sha }} \
+            --dockerfile=docker/Dockerfile
       # Step 5: Deploy to Cloud Run
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
