@@ -6,6 +6,7 @@ RUN npm ci
 COPY resources ./resources
 RUN npm run build
 
+
 ########################  Composer stage  ################################
 FROM composer:2 AS vendor
 WORKDIR /app
