@@ -1,4 +1,5 @@
 name: Deploy Dev
+
 on:
   push:
     branches:
@@ -11,15 +12,22 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       # Step 1: Checkout the code
       - uses: actions/checkout@v4
 
       # Step 2: Authenticate with Google Cloud using Workload Identity Federation
-      - uses: google-github-actions/auth@v2
+      - id: auth
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.GCP_WIP_DEV }}
-          service_account: cicd@wb-dev-383717.iam.gserviceaccount.com
+          service_account: cicd-github-actions@wb-dev-383717.iam.gserviceaccount.com
+
+      # OPTIONAL: Print decoded ID token to verify OIDC subject (for troubleshooting)
+      - name: Debug OIDC token (remove in production)
+        run: |
+          echo "${{ steps.auth.outputs.id_token }}" | cut -d '.' -f2 | base64 -d | jq || true
 
       # Step 3: Set up gcloud CLI
       - uses: google-github-actions/setup-gcloud@v2
