@@ -41,7 +41,7 @@ jobs:
           flags: |
             --add-cloudsql-instances=wb-dev-383717:us-central1:wbr-dev
             --port=8080
-          env_vars: APP_ENV=development
-          secrets: |
-            DB_PASSWORD=projects/wb-dev-383717/secrets/DB_PASSWORD:latest
-            RECAPTCHA_SITE_KEY=projects/wb-dev-383717/secrets/RECAPTCHA_SITE_KEY:latest
+          env_vars: |
+            APP_ENV=development
+            DB_PASSWORD=${{ secrets.DB_PASSWORD_WBR_DEV }}
+            RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
