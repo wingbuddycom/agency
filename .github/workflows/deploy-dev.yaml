@@ -27,7 +27,7 @@ jobs:
       # Step 4: Build your Docker image using Cloud Build
       - name: Build container with Cloud Build
         run: |
-          gcloud builds submit \
+          gcloud builds submit ./docker \
             --project=wb-dev-383717 \
             --tag=gcr.io/wb-dev-383717/agency:${{ github.sha }}
 
