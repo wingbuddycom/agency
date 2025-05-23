@@ -1,1 +1,107 @@
+$fa-style-family: "classic"; // force classic font rendering
+$fa-font-display: "block";   // optional, avoids invisible icons
+@import "fontExo";
+@import "bootstrap/scss/functions";
+
+$wingbuddy-orange : #ff8400;
+$wingbuddy-blue : #181D31;
+$form-success-blue : #1c70f2;
+$form-feedback-invalid-color : #DC5A5A;
+
+$font-family-base : 'Exo 2', sans-serif;
+
+$theme-colors: (
+    "secondary":  $wingbuddy-blue,
+    "success":    #e8f7ee,
+    "info":       #e6e6e6,
+    "warning":    #fff9e9,
+    "danger":     #fdf3f3
+);
+
+$custom-colors: (
+    "success-icon-color": #0DBB80,
+    "info-icon-color": #1c70f2,
+    "warning-icon-color": #EA9F1F,
+    "danger-icon-color": $form-feedback-invalid-color,
+    "orange": $wingbuddy-orange
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+//Bootstrap
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
 @import "bootstrap/scss/bootstrap";
+
+a{
+    text-decoration: none;
+}
+
+.bg-light{
+    background-color: var(--bs-gray-100);
+}
+
+.link-wb-orange {
+    color: $wingbuddy-orange;
+    text-decoration: none;
+
+    &:hover {
+        color: $wingbuddy-blue;
+        text-decoration: underline;
+    }
+}
+
+.link-simple {
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+        color:inherit;
+    }
+}
+
+.login-language-menu{
+    top: 0.5em;
+    right: 1em;
+    position: absolute;
+}
+
+.login-box{
+    max-width: 430px;
+}
+
+.login-image{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.login-quote-text {
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.btn,
+.btn-orange:hover{
+    color: #ffffff;
+}
+
+.dashboard-side-menu {
+
+}
+
+@media (max-width:768px){
+
+    .h-sm-auto{
+        height: auto !important;
+    }
+
+    .login-image-container{
+        height:180px;
+    }
+}

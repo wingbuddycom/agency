@@ -29,8 +29,13 @@ Route::group([
     Route::post('/login',  [LoginController::class, 'authenticate'])->name('login.submit');
 
     /* ----------  Protected  ---------- */
-    Route::middleware('auth:agent')->group(function () {
+    /*Route::middleware('auth:agent')->group(function () {
         Route::view('/commissions', 'commissions.index')->name('commissions');
         Route::view('/payment-details',  'payment-details.index')->name('payment-details');
-    });
+    });*/
+
+    Route::view('/bookings', 'bookings.index')->name('bookings');
+    Route::view('/commissions', 'commissions.index')->name('commissions');
+    Route::view('/payment-details',  'payment-details.index')->name('payment-details');
+
 });

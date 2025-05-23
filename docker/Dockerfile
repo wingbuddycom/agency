@@ -13,24 +13,34 @@ WORKDIR /app
 COPY . .
 RUN composer install --prefer-dist --no-dev --no-interaction --no-progress
 
-########################  Runtime (PHP 8.3 Alpine)  ######################
-FROM php:8.3-cli-alpine AS app
-WORKDIR /app
+# #######################  Runtime (PHP 8.3 Apache with Node & Composer) #####
+# Use the official PHP Apache image and install Node and Composer so that
+# `composer` and `npm` commands can be executed inside the running container.
+FROM php:8.3-apache AS app
+WORKDIR /var/www/html
 
-# --- PHP extension: pdo_mysql ------------------------------------------------
-RUN set -e; \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS mariadb-dev; \
-    docker-php-ext-install pdo_mysql; \
-    apk del .build-deps
+# Install Composer and Node so they are available at runtime
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git unzip curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Configure Apache to serve from /var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN a2enmod rewrite \
+    && sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # --- Copy code & built assets ------------------------------------------------
-COPY --from=vendor    /app /app
+COPY --from=vendor    /app /var/www/html
+COPY . /var/www/html
 COPY --from=nodebuild /app/public ./public
-COPY . /app
 # --- guarantee Laravel cache + view dirs exist & are writable -------
 RUN set -e \
     && mkdir -p storage/framework/{views,cache/data,sessions} \
-    && chown -R 82:82 storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
-# --- Run Laravel dev server ---------------------------------------------------
-CMD ["php","artisan","serve","--host=0.0.0.0","--port=8080"]
+
+EXPOSE 80
+CMD ["apache2-foreground"]
