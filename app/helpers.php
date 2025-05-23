@@ -11,11 +11,33 @@ if (!function_exists('routeL')) {
 }
 
 if (!function_exists('menu_label')) {
-    function menu_label(string $key): string
+    function menu_label(string $routeName = null): ?string
     {
-        return __('content.' . $key);
+        $routeName = $routeName ?? \Illuminate\Support\Facades\Route::currentRouteName();
+
+        foreach (config('menu') as $group) {
+            // Check nested structure like 'agency.items'
+            if (isset($group['items']) && is_array($group['items'])) {
+                foreach ($group['items'] as $item) {
+                    if (($item['route'] ?? null) === $routeName) {
+                        return __('content.' . ($item['key'] ?? ''));
+                    }
+                }
+            }
+
+            if (is_array($group) && isset($group[0]) && is_array($group[0])) {
+                foreach ($group as $item) {
+                    if (($item['route'] ?? null) === $routeName) {
+                        return __('content.' . ($item['key'] ?? ''));
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }
+
 
 if (!function_exists('menu_banner')) {
     function menu_banner(string $routeKey = null): ?string
@@ -28,7 +50,7 @@ if (!function_exists('menu_banner')) {
             if (isset($group['items']) && is_array($group['items'])) {
                 foreach ($group['items'] as $item) {
                     if (isset($item['route']) && $item['route'] === $routeKey) {
-                        return $group['bannerImage'] ?? null;
+                        return $item['bannerImage'] ?? null;
                     }
                 }
             }

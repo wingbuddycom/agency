@@ -4,6 +4,12 @@
 
 @section('content')
 
+@endsection
 
-
+@section('tableBody')
+    <tr>
+        @foreach(__('content.bookings.table') as $label)
+            <td class="text-nowrap">{{ $label }}</td>
+        @endforeach
+    </tr>
 @endsection

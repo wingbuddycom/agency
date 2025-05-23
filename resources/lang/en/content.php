@@ -20,12 +20,32 @@ return [
     'bookings' => [
         'title' => 'Bookings',
         'icon' => '<i class="fa-solid fa-book"></i>',
-        'bannerImage' => 'https://assets.wingbuddy.com/images/package/581/banner_authentic-greek-islands.jpg?v='.time()
+        'bannerImage' => 'https://assets.wingbuddy.com/images/package/581/banner_authentic-greek-islands.jpg?v='.time(),
+        'table' => [
+            'Reservation ID',
+            'Package Name',
+            'Reservation Date',
+            'Status',
+            'Departure Date',
+            'Passengers',
+            'Total Booking Price',
+            'Commission',
+            'Currency',
+            'Travel Advisor',
+        ]
     ],
     'commissions' => [
         'title' => 'Commissions',
         'icon' => '<i class="fa-regular fa-file-invoice-dollar"></i>',
-        'bannerImage' => 'https://assets.wingbuddy.com/images/packageImage_200217103136.jpg?v='.time()
+        'bannerImage' => 'https://assets.wingbuddy.com/images/packageImage_200217103136.jpg?v='.time(),
+        'table' => [
+            'Reservation Id',
+            'Amount Before Taxes',
+            'Total Amount',
+            'Status',
+            'Invoice',
+            'Payment Method'
+        ]
     ]
 
 ];

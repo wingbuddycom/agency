@@ -5,6 +5,7 @@ $fa-font-display: "block";   // optional, avoids invisible icons
 
 $wingbuddy-orange : #ff8400;
 $wingbuddy-blue : #181D31;
+$info-blue-bg : #f0f1fd;
 $form-success-blue : #1c70f2;
 $form-feedback-invalid-color : #DC5A5A;
 
@@ -13,7 +14,7 @@ $font-family-base : 'Exo 2', sans-serif;
 $theme-colors: (
     "secondary":  $wingbuddy-blue,
     "success":    #e8f7ee,
-    "info":       #e6e6e6,
+    "info":       $info-blue-bg,
     "warning":    #fff9e9,
     "danger":     #fdf3f3
 );
@@ -91,8 +92,26 @@ a{
     color: #ffffff;
 }
 
-.dashboard-side-menu {
+.dashboard-submenu{
+    list-style: none;
+    padding: 0 0 0 1rem;
+}
 
+.dashboard-side-menu .nav-link{
+    padding: .5rem;
+}
+
+.dashboard-side-menu .nav-link.active{
+    background-color: #daeef4;
+    color: #29659f;
+}
+
+.dashboard-table{
+    font-size: .9rem;
+}
+
+.dashboard-table th{
+    font-weight: 600;
 }
 
 @media (max-width:768px){
